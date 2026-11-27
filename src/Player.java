@@ -2,7 +2,7 @@ public class Player{
   private String season;
   private String name;
   private String position;
-  private int rating
+  private int rating;
 
     public Player(String season, String name, String position, int rating) {
         this.season = season;
