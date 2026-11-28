@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
@@ -33,10 +34,26 @@ public class Main {
                 players.add(player);
             }
 
+            ArrayList<String> seasons = new ArrayList<String>();
             for (Player player : players) {
-                System.out.println(player);
+                if (!seasons.contains(player.getSeason())) {
+                    seasons.add(player.getSeason());
+                }
             }
-            System.out.println("Players loaded: " + players.size());
+
+            if (seasons.isEmpty()) {
+                System.out.println("No players were loaded.");
+                return;
+            }
+
+            Random random = new Random();
+            String selectedSeason = seasons.get(random.nextInt(seasons.size()));
+            System.out.println("Season spun: " + selectedSeason);
+            for (Player player : players) {
+                if (player.getSeason().equals(selectedSeason)) {
+                    System.out.println(player);
+                }
+            }
         } catch (FileNotFoundException e) {
             System.out.println("Could not find data/players.csv. Run from the project folder.");
         } catch (NumberFormatException e) {
