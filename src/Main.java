@@ -47,43 +47,66 @@ public class Main {
             }
 
             Random random = new Random();
-            String selectedSeason = seasons.get(random.nextInt(seasons.size()));
-            System.out.println("Season spun: " + selectedSeason);
-            ArrayList<Player> roster = new ArrayList<Player>();
             ArrayList<Player> lineup = new ArrayList<Player>();
-            for (Player player : players) {
-                if (player.getSeason().equals(selectedSeason)) {
-                    roster.add(player);
-                }
-            }
-
-            for (int i = 0; i < roster.size(); i++) {
-                System.out.println((i + 1) + ". " + roster.get(i));
-            }
+            ArrayList<String> openPositions = new ArrayList<String>();
+            openPositions.add("PG");
+            openPositions.add("SG");
+            openPositions.add("SF");
+            openPositions.add("PF");
+            openPositions.add("C");
 
             try (Scanner input = new Scanner(System.in)) {
-                int choice = 0;
-                while (choice < 1 || choice > roster.size()) {
-                    System.out.print("Choose a player number: ");
-                    if (!input.hasNextLine()) {
-                        System.out.println("No player selected.");
+                while (!openPositions.isEmpty()) {
+                    if (seasons.isEmpty()) {
+                        System.out.println("Not enough unused seasons to finish the lineup.");
                         return;
                     }
-                    String answer = input.nextLine().trim();
-                    try {
-                        choice = Integer.parseInt(answer);
-                        if (choice < 1 || choice > roster.size()) {
-                            System.out.println("Enter a number from 1 to " + roster.size() + ".");
+
+                    int seasonIndex = random.nextInt(seasons.size());
+                    String selectedSeason = seasons.remove(seasonIndex);
+                    ArrayList<Player> roster = new ArrayList<Player>();
+                    for (Player player : players) {
+                        if (player.getSeason().equals(selectedSeason)
+                                && openPositions.contains(player.getPosition())) {
+                            roster.add(player);
                         }
-                    } catch (NumberFormatException e) {
-                        System.out.println("Enter a whole number.");
                     }
+                    if (roster.isEmpty()) {
+                        continue;
+                    }
+
+                    System.out.println("Season spun: " + selectedSeason);
+                    System.out.println("Open positions: " + openPositions);
+                    for (int i = 0; i < roster.size(); i++) {
+                        System.out.println((i + 1) + ". " + roster.get(i));
+                    }
+
+                    int choice = 0;
+                    while (choice < 1 || choice > roster.size()) {
+                        System.out.print("Choose a player number: ");
+                        if (!input.hasNextLine()) {
+                            System.out.println("Draft ended before the lineup was complete.");
+                            return;
+                        }
+                        String answer = input.nextLine().trim();
+                        try {
+                            choice = Integer.parseInt(answer);
+                            if (choice < 1 || choice > roster.size()) {
+                                System.out.println("Enter a number from 1 to " + roster.size() + ".");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Enter a whole number.");
+                        }
+                    }
+
+                    Player selectedPlayer = roster.get(choice - 1);
+                    lineup.add(selectedPlayer);
+                    openPositions.remove(selectedPlayer.getPosition());
+                    System.out.println("Added to lineup: " + selectedPlayer);
+                    System.out.println();
                 }
 
-                Player selectedPlayer = roster.get(choice - 1);
-                lineup.add(selectedPlayer);
-                System.out.println("Added to lineup: " + selectedPlayer);
-                System.out.println("Your lineup:");
+                System.out.println("Your completed lineup:");
                 for (Player player : lineup) {
                     System.out.println(player);
                 }
