@@ -110,6 +110,13 @@ public class Main {
                 for (Player player : lineup) {
                     System.out.println(player);
                 }
+
+                int totalRating = 0;
+                for (Player player : lineup) {
+                    totalRating += player.getRating();
+                }
+                double teamRating = (double) totalRating / lineup.size();
+                System.out.printf("Team rating: %.1f%n", teamRating);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Could not find data/players.csv. Run from the project folder.");
